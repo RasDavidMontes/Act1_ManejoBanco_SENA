@@ -12,22 +12,27 @@ public class CtaInversion extends Cuentas{
     
     private double montoInicial=25000.0;
     private double saldoMinimo=10000.0;
-    private String idCuenta;
-    private String nombreInversora;
-
-    public CtaInversion( String nombreInversora, String idTitular, String fechaCuenta, String tipoCuenta) {
+    private String idCuenta="";
+    private String nombreInversora="";
+    private String tipoRegistro="";
+    private int porcientoRetorno=0;
+    
+    public CtaInversion( String nombreInversora, String idTitular, String fechaCuenta, 
+            String tipoCuenta, int porcientoRetorno, String tipoRegistro) {
         super(idTitular, fechaCuenta, tipoCuenta);
         this.idCuenta = idTitular;
         this.nombreInversora = nombreInversora;
+        this.porcientoRetorno= porcientoRetorno;
+        this.tipoRegistro=tipoRegistro;
     }
     
     public String deposito( double deposito){
-        String estadoDeposito= super.hacerDeposito(deposito);
+        String estadoDeposito= super.hacerDeposito(deposito, this);
         return estadoDeposito;
     }
     
     public String retiro( double retiro){
-        String estadoRetiro = super.hacerRetiro( retiro);
+        String estadoRetiro = super.hacerRetiro( retiro, this);
         return estadoRetiro;
     }
 
@@ -85,6 +90,20 @@ public class CtaInversion extends Cuentas{
      */
     public void setNombreInversora(String nombreInversora) {
         this.nombreInversora = nombreInversora;
+    }
+
+    /**
+     * @return the porcientoRetorno
+     */
+    public int getPorcientoRetorno() {
+        return porcientoRetorno;
+    }
+
+    /**
+     * @param porcientoRetorno the porcientoRetorno to set
+     */
+    public void setPorcientoRetorno(int porcientoRetorno) {
+        this.porcientoRetorno = porcientoRetorno;
     }
     
 }

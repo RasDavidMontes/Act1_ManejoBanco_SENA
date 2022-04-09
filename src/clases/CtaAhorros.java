@@ -21,13 +21,13 @@ public class CtaAhorros extends Cuentas{
         this.porcentajeInteresesMes = porcentajeInteresesMes;
     }
         
-    public String deposito( double deposito){
-        String estadoDeposito= super.hacerDeposito(deposito);
+    public String deposito( double deposito, Cuentas cuenta){
+        String estadoDeposito= super.hacerDeposito(deposito, this);
         return estadoDeposito;
     }
     
     public String retiro( double retiro){
-        String estadoRetiro = super.hacerRetiro( retiro);
+        String estadoRetiro = super.hacerRetiro( retiro, this);
         return estadoRetiro;
     }
 
@@ -85,6 +85,10 @@ public class CtaAhorros extends Cuentas{
      */
     public void setPorcentajeInteresesMes(int porcentajeInteresesMes) {
         this.porcentajeInteresesMes = porcentajeInteresesMes;
+    }
+
+    public void setPorcentajeAhorroAnual() {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     
 }

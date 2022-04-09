@@ -20,6 +20,7 @@ public class Persona {
     private String direccion="";
     private String correo="";
     //private String tipoCuenta="";
+    private String cargo;
 
     
     public Persona(String nombre,String documento,String telefono,String direccion,String correo) {
@@ -38,6 +39,20 @@ public class Persona {
         this.correo=correo;
     }
     
+    
+    /**
+     * @return the cargo
+     */
+    public String getCargo() {
+        return cargo;
+    }
+
+    /**
+     * @param cargo the cargo to set
+     */
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
     
     /**
      * @return the nombre

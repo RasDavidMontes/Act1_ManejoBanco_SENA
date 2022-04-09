@@ -12,19 +12,33 @@ import java.util.List;
  */
 public class CasaInversora extends Persona{
     
-    List<Cliente> listClientesCasaInv;
-    List<Cliente> listNivelesRiesgo;
-    List<Cliente> listMontos;
-    List<Cliente> listPlazos;
+    List<Persona> listClientesCasaInv;
+    List<String> listNivelesRiesgo;
+    List<String> listMontos;
+    List<String> listPlazos;
     int porcentajeRetorno;
 
-    public CasaInversora(List<Cliente> listClientesCasaInv, List<Cliente> listNivelesRiesgo, List<Cliente> listMontos, List<Cliente> listPlazos, int porcentajeRetorno, String nombre, String documento, String telefono, String direccion, String correo) {
+    public CasaInversora( List<String> listNivelesRiesgo, List<String> listMontos, 
+            List<String> listPlazos, int porcentajeRetorno, 
+            String nombre, String documento, String telefono, String direccion, String correo
+        ) {
         super(nombre, documento, telefono, direccion, correo);
-        this.listClientesCasaInv = listClientesCasaInv;
         this.listNivelesRiesgo = listNivelesRiesgo;
         this.listMontos = listMontos;
         this.listPlazos = listPlazos;
-        this.porcentajeRetorno = porcentajeRetorno;
+        this.porcentajeRetorno = porcentajeRetorno;        
+    }
+    
+    public void addCliente(Cliente cli){
+        this.listClientesCasaInv.add(cli);
+    }
+    
+    public List getListaclientes(){
+        return this.listClientesCasaInv;
+    }
+    
+    public void setListaclientes(List listaCli){
+        this.listClientesCasaInv= listaCli;
     }
     
 }

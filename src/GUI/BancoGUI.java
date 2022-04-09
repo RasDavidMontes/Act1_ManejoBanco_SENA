@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JFrame.java to edit this template
- */
 package GUI;
 
 
@@ -9,14 +5,26 @@ import clases.*;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.JOptionPane;
-;
-import java.util.ArrayList;
-import java.util.List;
-import javax.swing.JOptionPane;
 
 /**
  *
- * @author rasda
+ * @author David fernando Montes Florián
+ * @SENA 2022 - 
+ *      DESARROLLO DE APLICACIONES CON INTERFAZ GRAFICA, MANEJO DE EVENTOS, 
+ *      CLASES Y OBJETOS: JAVA (2531803)
+ * 
+ * Pendiente creación e integración al proyecto de la clase vacaciones.
+ * Pendiente operaciones con intereses.
+ * 
+ * Posibilidad de creación de cuentas de Ahorro e Inversión.
+ * Posibilidad de creación de prefiles de usuario: "Cliente", "Empleado" y "Casa Inversionista".
+ * Manejo de los montos minimos de la cuenta, tanto para creación como para el saldo permanente.
+ * 
+ * Búsqueda de cuentas registradas por ID.
+ * Listar todas las cuentas registradas.
+ * 
+ * Depósito y retiro (respeta montos mínimos establecidos) funcionando correctamente. 
+ * 
  */
 public class BancoGUI extends javax.swing.JFrame {
 
@@ -35,6 +43,11 @@ public class BancoGUI extends javax.swing.JFrame {
             
     List<Cuentas> listCuentas= new ArrayList<>();
     List<Persona> listPersonas= new ArrayList<>();
+    List<Persona> listCasaInversoras= new ArrayList<>();
+    
+    List<String> listNivelesRiesgo= new ArrayList<>();
+    List<String> listMontos= new ArrayList<>();
+    List<String> listPlazos= new ArrayList<>();
     
     private String msj;
     private String fechaCuenta;
@@ -42,8 +55,24 @@ public class BancoGUI extends javax.swing.JFrame {
     private CtaAhorros objCtaAhorros;
     private CtaInversion objCtaInversion;
     private Cliente objCliente;
+    private CasaInversora objCasaInversora;
+    private int porcientoRetorno;
+    private String sueldoEmpleado;
+    private String cargo;
+    private Empleado objEmpleado;
+    private String documentotrns;
+    private String tipoCuentaTrns;
+    private String montoTrns;
+    private boolean hacerTrns;
+    private Cuentas objCuentas= new Cuentas("","","");
+    private String nombreInversora;
+    private Persona objPersona= new Persona("", "", "", "", "");
     
 
+    public void addCasaInversionista(CasaInversora objCasa){
+        this.listCasaInversoras.add(objCasa);
+    }
+    
     /**
      * Creates new form BancoGUI
      */
@@ -88,15 +117,13 @@ public class BancoGUI extends javax.swing.JFrame {
         btnCancelRegistro = new javax.swing.JButton();
         jPanel3 = new javax.swing.JPanel();
         jLabel10 = new javax.swing.JLabel();
-        jComboBox3 = new javax.swing.JComboBox<>();
-        jTextField8 = new javax.swing.JTextField();
+        tipoTransaccion_jComboBox = new javax.swing.JComboBox<>();
+        txtDocumento_Tran = new javax.swing.JTextField();
         jLabel11 = new javax.swing.JLabel();
-        jLabel12 = new javax.swing.JLabel();
-        jTextField9 = new javax.swing.JTextField();
         jLabel13 = new javax.swing.JLabel();
-        jTextField10 = new javax.swing.JTextField();
-        btnDoTransaction = new javax.swing.JButton();
-        btnCancelTransaction = new javax.swing.JButton();
+        txtMonto_trns = new javax.swing.JTextField();
+        btnContinuar_Trns = new javax.swing.JButton();
+        btnCancel_Trns = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         resultados_jTextArea = new javax.swing.JTextArea();
         btnListarCuentas = new javax.swing.JButton();
@@ -138,7 +165,7 @@ public class BancoGUI extends javax.swing.JFrame {
 
         jLabel9.setText("Tipo Registro");
 
-        tipoRegistro_jComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccionar", "Cliente", "Empleado", "Casa Inversión" }));
+        tipoRegistro_jComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccionar", "Cliente", "Empleado", "Casa Inversora" }));
 
         btnDoRegistro.setText("Crear");
         btnDoRegistro.addActionListener(new java.awt.event.ActionListener() {
@@ -230,23 +257,24 @@ public class BancoGUI extends javax.swing.JFrame {
 
         jLabel10.setText("Transacción");
 
-        jComboBox3.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccionar", "Depósito", "Retiro", "Consulta" }));
+        tipoTransaccion_jComboBox.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Seleccionar", "Depósito", "Retiro", "Consulta" }));
 
-        jTextField8.setToolTipText("Documento");
+        txtDocumento_Tran.setToolTipText("Documento");
 
         jLabel11.setText("Documento");
 
-        jLabel12.setText("ID Cuenta");
-
-        jTextField9.setToolTipText("ID Cuenta");
-
         jLabel13.setText("Monto $$$");
 
-        jTextField10.setToolTipText("Monto Económico");
+        txtMonto_trns.setToolTipText("Monto Económico");
 
-        btnDoTransaction.setText("Continuar");
+        btnContinuar_Trns.setText("Continuar");
+        btnContinuar_Trns.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnContinuar_TrnsActionPerformed(evt);
+            }
+        });
 
-        btnCancelTransaction.setText("Cancelar");
+        btnCancel_Trns.setText("Cancelar");
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -254,47 +282,41 @@ public class BancoGUI extends javax.swing.JFrame {
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(34, 34, 34)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
-                    .addComponent(jLabel13, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel12, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel10, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jLabel11, javax.swing.GroupLayout.Alignment.LEADING, javax.swing.GroupLayout.PREFERRED_SIZE, 101, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                    .addComponent(jLabel13, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel10, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(jLabel11, javax.swing.GroupLayout.DEFAULT_SIZE, 101, Short.MAX_VALUE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(btnDoTransaction, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addComponent(btnContinuar_Trns, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnCancelTransaction, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addComponent(jTextField9)
-                    .addComponent(jTextField8)
-                    .addComponent(jComboBox3, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 310, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addComponent(btnCancel_Trns, javax.swing.GroupLayout.PREFERRED_SIZE, 121, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtDocumento_Tran)
+                    .addComponent(tipoTransaccion_jComboBox, 0, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                    .addComponent(txtMonto_trns, javax.swing.GroupLayout.DEFAULT_SIZE, 310, Short.MAX_VALUE))
                 .addContainerGap(34, Short.MAX_VALUE))
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(jPanel3Layout.createSequentialGroup()
-                .addGap(24, 24, 24)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
+                .addContainerGap(52, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel10)
-                    .addComponent(jComboBox3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(tipoTransaccion_jComboBox, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(26, 26, 26)
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(txtDocumento_Tran, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jLabel11))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField8, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel11))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField9, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel12))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jTextField10, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(txtMonto_trns, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jLabel13))
-                .addGap(18, 18, 18)
+                .addGap(12, 12, 12)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnDoTransaction)
-                    .addComponent(btnCancelTransaction))
-                .addContainerGap(22, Short.MAX_VALUE))
+                    .addComponent(btnContinuar_Trns)
+                    .addComponent(btnCancel_Trns))
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Transacciones", jPanel3);
@@ -310,7 +332,12 @@ public class BancoGUI extends javax.swing.JFrame {
             }
         });
 
-        btnLimpiarResultados.setText("X");
+        btnLimpiarResultados.setText("Reinicio");
+        btnLimpiarResultados.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLimpiarResultadosActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -324,9 +351,9 @@ public class BancoGUI extends javax.swing.JFrame {
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jScrollPane1)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnListarCuentas, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(btnLimpiarResultados, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 69, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                        .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                            .addComponent(btnLimpiarResultados, javax.swing.GroupLayout.DEFAULT_SIZE, 69, Short.MAX_VALUE)
+                            .addComponent(btnListarCuentas, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -338,11 +365,11 @@ public class BancoGUI extends javax.swing.JFrame {
                 .addComponent(jTabbedPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 87, Short.MAX_VALUE)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(btnListarCuentas)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btnLimpiarResultados)))
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 160, Short.MAX_VALUE)
+                        .addComponent(btnLimpiarResultados))
+                    .addComponent(jScrollPane1))
                 .addContainerGap())
         );
 
@@ -368,16 +395,29 @@ public class BancoGUI extends javax.swing.JFrame {
         if(tipoRegistro.isEmpty()||nombre.isEmpty()||documento.isEmpty()||telefono.isEmpty()||
                   direccion.isEmpty()||correo.isEmpty()||tipoCuenta.isEmpty()) {
             JOptionPane.showMessageDialog(null, "Todos los campos requeridos\ndeben ser diligenciados!");
-        }else{
-            crearPersona();
-            crearCuenta();
+        }else{/*
+            if(tipoCuenta.equalsIgnoreCase("Casa Inversora")){
+                crearCasaInversora();
+            }else{*/
+                crearPersona();
+                crearCuenta();
+            //}            
             limpiarCampos();
         }
     }//GEN-LAST:event_btnDoRegistroActionPerformed
 
+    private void crearCasaInversora(){
+        this.objCasaInversora= new 
+            CasaInversora( listNivelesRiesgo, listMontos, listPlazos, porcientoRetorno, nombre, documento, telefono, direccion, correo);
+        objCuentas.setTipoRegistro(tipoRegistro);
+        this.listCasaInversoras.add(objCasaInversora);
+        this.listPersonas.add(objCasaInversora);
+        System.out.println("CasaInversora:"+objCasaInversora.getNombre()+" creada correctamente.");                
+    }
+    
     private void crearPersona(){
-        int tC = tipoCuenta_jComboBox.getSelectedIndex();
-        switch (tC) {
+        int tR = tipoRegistro_jComboBox.getSelectedIndex();
+        switch (tR) {
             case 0:
                 JOptionPane.showMessageDialog(null, "Seleccione el tipo de registro.");
                 break;
@@ -389,9 +429,17 @@ public class BancoGUI extends javax.swing.JFrame {
                 break;
             case 2:
                 System.out.println("crearEmpleado");
+                msj= "Ingrese el cargo del empleado.";
+                cargo = JOptionPane.showInputDialog(null, msj);
+                msj= "Sueldo asignado? ";
+                sueldoEmpleado = JOptionPane.showInputDialog(null, msj);
+                objEmpleado= new Empleado(cargo, fechaCuenta, sueldoEmpleado, nombre, documento, telefono, direccion, correo);
+                this.listPersonas.add(objEmpleado);
+                System.out.println( "Creado el empleado: "+ objEmpleado.getNombre()+ ", idEmpleado: "+ documento);
                 break;
-            case 4:
+            case 3:
                 System.out.println("crearCasaInversora");
+                crearCasaInversora();
                 break;
             default:
                 throw new AssertionError();
@@ -409,43 +457,56 @@ public class BancoGUI extends javax.swing.JFrame {
     }
     
     private void crearCuenta(){
-        int tR = this.tipoRegistro_jComboBox.getSelectedIndex();
-        switch (tR) {
+        int tC = this.tipoCuenta_jComboBox.getSelectedIndex();
+        switch (tC) {
             case 0:
                 JOptionPane.showMessageDialog(null, "Seleccione el tipo de cuenta.");
                 break;
             case 1:
                 System.out.println("Crear cuenta Ahorros.");
+                String paa = JOptionPane.showInputDialog(null, "Ingrese el Porcentaje De Ahorro Anual establecido.");
+                porcientoAhorro= Integer.valueOf(paa);
                 objCtaAhorros= new CtaAhorros( porcientoAhorro, porcientoInteresMes, documento, fechaCuenta, tipoCuenta);
                 this.listCuentas.add(objCtaAhorros);
-                hacerDeposito();
+                hacerDeposito(objCtaAhorros);
                 JOptionPane.showMessageDialog(null,"FinDeposito:"+ msj);
                 break;
+
             case 2:
                 System.out.println("Crear cuenta Inversión.");
-                String nombreInversora=nombre;
-                objCtaInversion= new CtaInversion( documento, nombreInversora, fechaCuenta, tipoCuenta);
+                if(tipoCuenta_jComboBox.getSelectedIndex()==3){//Si es casa inversora...
+                    nombreInversora=nombre;
+                    msj="Ingrese el porcentaje de retorno de la Inversión.";
+                    msj= JOptionPane.showInputDialog(msj);                    
+                    porcientoRetorno=Integer.valueOf(msj);
+                    objCuentas.setTipoRegistro(tipoRegistro);
+                }else{
+                    porcientoRetorno=0;
+                }
+                //objCtaInversion.setTipoRegistro(this.);
+                objCtaInversion= new CtaInversion( documento, nombreInversora, fechaCuenta, tipoCuenta, porcientoRetorno, tipoRegistro);
                 this.listCuentas.add(objCtaInversion);
-                hacerDeposito();
-                JOptionPane.showMessageDialog(null,"FinDeposito:"+ msj);
+                hacerDeposito(objCtaInversion);
+                JOptionPane.showMessageDialog(null,"FinDeposito Inicial:"+ msj);
+                
                 break;
             default:
-                throw new AssertionError();
+                System.out.println("Crear cuenta opción por defecto");
         }
         JOptionPane.showMessageDialog(null, "Se creó la cuenta "+ tipoCuenta+ " correctamente.");            
     }
     
-    private String hacerDeposito(){
+    private String hacerDeposito(Cuentas cuenta){
         String depositoLetras = JOptionPane.showInputDialog("Monto del Deposito?");
         deposito= Double.valueOf(depositoLetras);
-        msj =objCtaAhorros.hacerDeposito(deposito);        
+        msj = cuenta.hacerDeposito(deposito, cuenta);
         return msj;
     }
     
     private void hacerRetiro(){
         String retiroLetras = JOptionPane.showInputDialog("Monto del retiro?");
         deposito= Double.valueOf(retiroLetras);
-        String estadoRetiro=objCtaAhorros.hacerRetiro(retiro);
+        String estadoRetiro=objCtaAhorros.hacerRetiro(retiro, this.objCuentas);
         JOptionPane.showMessageDialog(null,"FinRetiro:"+ estadoRetiro);
     }
     
@@ -454,30 +515,145 @@ public class BancoGUI extends javax.swing.JFrame {
         int cantCuentas = this.listCuentas.size();
         int cantPersonas = this.listPersonas.size();
         
-        System.out.println("________________________________________________");
+            System.out.println("________________________________________________");
         for( int i=0; i<cantCuentas;i++){
-            Cuentas objCuentas= listCuentas.get(i);
-            Persona objPersona= listPersonas.get(i);
+            objCuentas= listCuentas.get(i);
+            objPersona= listPersonas.get(i);
             this.nombre= objPersona.getNombre();
+            this.nombre= objPersona.getCargo();
             this.correo= objPersona.getCorreo();
             this.direccion= objPersona.getDireccion();
             this.telefono= objPersona.getTelefono();
             this.documento= objCuentas.getIdTitular();
             this.saldo= objCuentas.getSaldo();
             this.tipoCuenta= objCuentas.getTipoCuenta();          
+            /*this.porcientoInteresMes= objCuentas.getObjCtaAhorros().getPorcentajeInteresesMes();          
+            this.porcientoAhorro= objCuentas.getObjCtaAhorros().getPorcentajeAhorro();          
+            this.porcientoRetorno= objCuentas.getObjCtaInversion().getPorcientoRetorno();*/
             msj= "\n >>>  Cuenta "+i+
                     ": \n\tID: "+ documento+ 
                     "\n\tTitular: "+nombre+ 
+                    "\n\tCargo: "+cargo+ 
                     "\n\tTeléfono: "+ telefono+ 
                     "\n\tCorreo: "+ correo+ 
                     "\n\tDirección: "+ direccion+
                     "\n\tSaldo: "+ saldo+ 
-                    "\n\tTipo: "+ tipoCuenta;
+                    "\n\tTipo: "+ tipoCuenta+
+                    "\n\tPorcentaje Interés Mensual: "+ porcientoInteresMes+ 
+                    "\n\tPorcentaje De Retorno: "+ porcientoRetorno;
             System.out.println( msj+ "\n________________________________________________");
             this.resultados_jTextArea.setText( resultados_jTextArea.getText()+ "\n"+ msj);
         }
     }//GEN-LAST:event_btnListarCuentasActionPerformed
 
+    private void getFecha(){
+        
+    }
+    
+    private void validarTransaccion(){
+        documentotrns = this.txtDocumento_Tran.getText();
+        //tipoCuentaTrns = this.txtTipoCuenta_trans.getText();
+        montoTrns = this.txtMonto_trns.getText();
+        if(listCuentas.size()>0){
+            for(int i=0; i<listCuentas.size();i++){
+                String idTit = this.listCuentas.get(i).getIdTitular();
+                try {
+                    if(idTit.equalsIgnoreCase(documentotrns)){
+                        msj="Encontrada la cuenta correspondiente.";
+                        this.objCuentas= this.listCuentas.get(i);
+                        hacerTrns=true;
+                        break;
+                    }else {
+                        hacerTrns=false;                
+                        msj="NO encontrada la cuenta correspondiente.";
+                    }
+                } catch (NullPointerException npe) {
+                    msj="NO se encontraron cuentas\nregistradas en el sistema.";
+                } catch (Exception e) {
+                    msj="Fallo inesperado:\n"+e.getLocalizedMessage();
+                }
+            }
+        }else{
+            msj="NO se encontraron cuentas\nregistradas en el sistema.";
+        }
+        JOptionPane.showConfirmDialog(rootPane, msj);
+        System.out.println(msj);
+    }
+    
+    private void btnContinuar_TrnsActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnContinuar_TrnsActionPerformed
+        validarTransaccion();
+        if(hacerTrns){
+            System.out.println("Cuenta válida.");
+            int sel = tipoTransaccion_jComboBox.getSelectedIndex();
+            switch (sel) {
+                case 0:
+                    break;
+                case 1:
+                    System.out.println("Hacer Deposito");
+                String resDeposito = this.objCuentas.hacerDeposito(Double.valueOf(montoTrns), this.objCuentas);
+                    JOptionPane.showInternalMessageDialog(null, "Resultado Del Depósito: "+ resDeposito);
+                    break;
+
+                case 2:
+                    System.out.println("Hacer Retiro");
+                    String resRetiro = this.objCuentas.hacerRetiro(Double.valueOf(montoTrns), this.objCuentas);
+                    JOptionPane.showMessageDialog(null, "Resultado Del Retiro: "+ resRetiro);
+                    break;
+
+                case 3:
+                    System.out.println("Hacer Consulta");   
+                    this.documento= this.txtDocumento_Tran.getText().trim();
+                    buscarID(documento);
+                    break;
+                default:
+                    break;
+            }
+            
+        }
+    }//GEN-LAST:event_btnContinuar_TrnsActionPerformed
+
+    private void btnLimpiarResultadosActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLimpiarResultadosActionPerformed
+        this.resultados_jTextArea.setText("\n");
+    }//GEN-LAST:event_btnLimpiarResultadosActionPerformed
+
+    private void buscarID(String documentoBuscar){
+        int cantCuentas = this.listCuentas.size();
+        int cantPersonas = this.listPersonas.size();
+        
+            System.out.println("________________________________________________");
+        for( int i=0; i<cantCuentas;i++){
+            objCuentas= listCuentas.get(i);
+            objPersona= listPersonas.get(i);            
+            this.documento= objCuentas.getIdTitular();
+            
+            if(this.documento.equalsIgnoreCase(documentoBuscar)){
+                this.nombre= objPersona.getNombre();
+                this.correo= objPersona.getCorreo();
+                this.direccion= objPersona.getDireccion();
+                this.telefono= objPersona.getTelefono();
+                this.saldo= objCuentas.getSaldo();
+                this.tipoCuenta= objCuentas.getTipoCuenta();          
+                /*this.porcientoInteresMes= objCuentas.getObjCtaAhorros().getPorcentajeInteresesMes();          
+                this.porcientoAhorro= objCuentas.getObjCtaAhorros().getPorcentajeAhorro();          
+                this.porcientoRetorno= objCuentas.getObjCtaInversion().getPorcientoRetorno();*/
+                msj= "\n >>> Busqueda De Cuenta Por ID."+
+                        ": \n\tID: "+ documento+ 
+                        "\n\tTitular: "+nombre+ 
+                        "\n\tTeléfono: "+ telefono+ 
+                        "\n\tCorreo: "+ correo+ 
+                        "\n\tDirección: "+ direccion+
+                        "\n\tSaldo: "+ saldo+ 
+                        "\n\tTipo: "+ tipoCuenta+
+                        "\n\tPorcentaje Interés Mensual: "+ porcientoInteresMes+ 
+                        "\n\tPorcentaje De Retorno: "+ porcientoRetorno;
+                System.out.println( msj+ "\n________________________________________________");
+                this.resultados_jTextArea.setText( resultados_jTextArea.getText()+ "\n"+ msj);
+                break;
+            }
+        }
+    }
+    
+    
     /**
      * @param args the command line arguments
      */
@@ -515,16 +691,14 @@ public class BancoGUI extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCancelRegistro;
-    private javax.swing.JButton btnCancelTransaction;
+    private javax.swing.JButton btnCancel_Trns;
+    private javax.swing.JButton btnContinuar_Trns;
     private javax.swing.JButton btnDoRegistro;
-    private javax.swing.JButton btnDoTransaction;
     private javax.swing.JButton btnLimpiarResultados;
     private javax.swing.JButton btnListarCuentas;
-    private javax.swing.JComboBox<String> jComboBox3;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
     private javax.swing.JLabel jLabel11;
-    private javax.swing.JLabel jLabel12;
     private javax.swing.JLabel jLabel13;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -538,15 +712,15 @@ public class BancoGUI extends javax.swing.JFrame {
     private javax.swing.JPanel jPanel3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTabbedPane jTabbedPane1;
-    private javax.swing.JTextField jTextField10;
-    private javax.swing.JTextField jTextField8;
-    private javax.swing.JTextField jTextField9;
     private javax.swing.JTextArea resultados_jTextArea;
     private javax.swing.JComboBox<String> tipoCuenta_jComboBox;
     private javax.swing.JComboBox<String> tipoRegistro_jComboBox;
+    private javax.swing.JComboBox<String> tipoTransaccion_jComboBox;
     private javax.swing.JTextField txtCorreo;
     private javax.swing.JTextField txtDireccion;
     private javax.swing.JTextField txtDocumento;
+    private javax.swing.JTextField txtDocumento_Tran;
+    private javax.swing.JTextField txtMonto_trns;
     private javax.swing.JTextField txtNombre;
     private javax.swing.JTextField txtTelefono;
     // End of variables declaration//GEN-END:variables

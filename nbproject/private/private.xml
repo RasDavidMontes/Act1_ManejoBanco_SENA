@@ -3,8 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/Users/rasda/Documents/NetBeansProjects/New%20Folder/Act1_ManejoBanco/src/GUI/BancoGUI.java</file>
-            <file>file:/C:/Users/rasda/Documents/NetBeansProjects/New%20Folder/Act1_ManejoBanco/src/clases/Act1_ManejoBanco.java</file>
+            <file>file:/C:/Users/rasda/Documents/NetBeansProjects/Act1_ManejoBanco/src/GUI/BancoGUI.java</file>
+            <file>file:/C:/Users/rasda/Documents/NetBeansProjects/Act1_ManejoBanco/src/clases/Cuentas.java</file>
+            <file>file:/C:/Users/rasda/Documents/NetBeansProjects/Act1_ManejoBanco/src/clases/CasaInversora.java</file>
+            <file>file:/C:/Users/rasda/Documents/NetBeansProjects/Act1_ManejoBanco/src/clases/CtaInversion.java</file>
+            <file>file:/C:/Users/rasda/Documents/NetBeansProjects/Act1_ManejoBanco/src/clases/Empleado.java</file>
+            <file>file:/C:/Users/rasda/Documents/NetBeansProjects/Act1_ManejoBanco/src/clases/VacacionesEmpleado.java</file>
+            <file>file:/C:/Users/rasda/Documents/NetBeansProjects/Act1_ManejoBanco/src/clases/CtaAhorros.java</file>
+            <file>file:/C:/Users/rasda/Documents/NetBeansProjects/Act1_ManejoBanco/src/clases/Persona.java</file>
         </group>
     </open-files>
 </project-private>
